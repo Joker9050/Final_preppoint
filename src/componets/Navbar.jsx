@@ -45,6 +45,7 @@ const Navbar = () => {
   const scrollContainerRef = useRef(null);
   const [isMobileView, setIsMobileView] = useState(false);
   const [isOpen_, setIsOpen_] = useState(false);
+  
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobileView(window.innerWidth <= 1080);
@@ -187,6 +188,7 @@ const Navbar = () => {
     { icon: <FaGraduationCap />, label: 'Courses' },
     { icon: <FaCertificate />, label: 'Certifications' },
   ];
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -254,7 +256,6 @@ const Navbar = () => {
                     </svg>
                     <span>Logout</span>
                   </li>
-                  {/* Add more list items here if needed */}
                 </ul>
               </div>
             )}
@@ -332,9 +333,9 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white shadow-md sticky top-0 z-50 w-full">
       {/* Top bar for contact information */}
-      <div className="bg-[#0a63b0] flex justify-between items-center px-2 sm:px-4 py-1">
+      <div className="bg-[#0a63b0] flex justify-between items-center px-2 sm:px-4 py-1 w-full">
         <div className="text-white text-xs sm:text-sm hover:text-blue-200 transition-colors duration-300 flex items-center">
           <FaEnvelope className="mr-1 sm:mr-2" />
           mail: prep_point@gmail.com
@@ -369,9 +370,9 @@ const Navbar = () => {
       </div>
 
       {/* Navbar Main Content */}
-      <div className="mx-auto flex justify-between items-center py-3 sm:py-2 px-4 sm:px-6">
+      <div className="mx-auto flex justify-between items-center py-3 sm:py-2 px-4 sm:px-6 w-full max-w-[1800px]">
         {/* Logo and Mobile Menu Button */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-2 xl:space-x-4 ">
           <div className="logo-container transform hover:scale-105 transition-transform duration-300">
             <Link to="/">
               <img src={logo} alt="Logo" className="w-[180px] h-[50px] sm:w-[180px] sm:h-[50px]" />
@@ -392,7 +393,7 @@ const Navbar = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute left-0 mt-2 bg-white shadow-xl rounded-lg w-[400px] sm:w-[550px] md:w-[650px] lg:w-[750px] overflow-hidden animate-fadeIn">
+                <div className="absolute left-0 mt-2 bg-white shadow-xl rounded-lg w-[400px] sm:w-[550px] md:w-[650px] lg:w-[750px] xl:w-[850px] overflow-hidden animate-fadeIn">
                   <div className="flex h-[280px] sm:h-[320px]">
                     {/* Sidebar - Fixed width */}
                     <div className="w-1/3 bg-gray-50 border-r min-w-[120px] sm:min-w-[160px]">
@@ -568,7 +569,7 @@ const Navbar = () => {
 
         {/* Desktop Navbar Links - Hidden on mobile and 1080px screens */}
         {!isMobileView && (
-          <nav className="flex space-x-4 md:space-x-6 lg:space-x-8">
+          <nav className="flex space-x-2 md:space-x-6 lg:space-x-6 xl:space-x-8">
 
                     {/* Search Bar - Hidden on mobile and 1080px screens */}
         {!isMobileView && (
@@ -576,7 +577,7 @@ const Navbar = () => {
             <div className="relative">
               <div
                 className={`flex cursor-pointer items-center gap-2 border-l-4 border-r-4 border-[#0a63b0] rounded-full px-2 transition-all duration-300 ease-in-out ${
-                  isFocused ? "w-[350px] p-2 shadow-md " : " w-[290px] p-2 shadow-md"
+                  isFocused ? "w-[190px] lg:w-[230px] xl:w-[400px] p-2 shadow-md " : "w-[170px] xl:w-[290px] p-2 shadow-md"
                 }`}
               >
                 <Search
@@ -634,12 +635,12 @@ const Navbar = () => {
 
       {/* Mobile Menu - Appears when menu button is clicked on mobile or 1080px screens */}
       {mobileMenuOpen && isMobileView && (
-        <div className="bg-white shadow-lg" ref={mobileMenuRef}>
+        <div className="bg-white shadow-lg w-full" ref={mobileMenuRef}>
           {/* Mobile Categories Dropdown */}
           
-          <div className="border-t border-b border-gray-200 px-4 py-2">
+          <div className="border-t border-b border-gray-200 px-4 py-2 w-full">
             {Object.entries(categories).map(([key, category]) => (
-              <div key={key} className="mb-3">
+              <div key={key} className="mb-3 w-full">
                 <button
                   className="w-full flex justify-between items-center py-3 text-left"
                   onClick={() => toggleMobileCategory(key)}
@@ -652,18 +653,18 @@ const Navbar = () => {
                 </button>
 
                 {mobileCategoryOpen === key && (
-                  <div className="pl-8 mt-2 space-y-3">
+                  <div className="pl-8 mt-2 space-y-3 w-full">
                     {category.sections?.map((section, sectionIndex) => (
-                      <div key={sectionIndex} className="mb-4">
+                      <div key={sectionIndex} className="mb-4 w-full">
                         <h4 className="font-medium text-gray-600 mb-2 text-lg">
                           {section.title}
                         </h4>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2 w-full">
                           {section.items.map((item, itemIndex) => (
                             item === 'view more →' ? (
                               <div 
                                 key={itemIndex}
-                                className={`flex items-center px-3 py-2 rounded-md ${section.color} text-base cursor-pointer`}
+                                className={`flex items-center px-3 py-2 rounded-md ${section.color} text-base cursor-pointer w-full`}
                                 onClick={() => handleViewMoreClick(key)}
                               >
                                 {techIcons[item] && <span className="mr-2">{techIcons[item]}</span>}
@@ -673,7 +674,7 @@ const Navbar = () => {
                               <a
                                 key={itemIndex}
                                 href="#"
-                                className={`flex items-center px-3 py-2 rounded-md ${section.color} text-base`}
+                                className={`flex items-center px-3 py-2 rounded-md ${section.color} text-base w-full`}
                               >
                                 {techIcons[item] && <span className="mr-2">{techIcons[item]}</span>}
                                 <span>{item}</span>
@@ -684,12 +685,12 @@ const Navbar = () => {
                       </div>
                     ))}
                     {!category.sections && (
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-2 w-full">
                         {category.items.map((item, itemIndex) => (
                           item === 'view more →' ? (
                             <div 
                               key={itemIndex}
-                              className="flex items-center px-3 py-2 bg-gray-50 rounded-md text-base cursor-pointer"
+                              className="flex items-center px-3 py-2 bg-gray-50 rounded-md text-base cursor-pointer w-full"
                               onClick={() => handleViewMoreClick(key)}
                             >
                               {techIcons[item] && <span className="mr-2">{techIcons[item]}</span>}
@@ -699,7 +700,7 @@ const Navbar = () => {
                             <a
                               key={itemIndex}
                               href="#"
-                              className="flex items-center px-3 py-2 bg-gray-50 rounded-md text-base"
+                              className="flex items-center px-3 py-2 bg-gray-50 rounded-md text-base w-full"
                             >
                               {techIcons[item] && <span className="mr-2">{techIcons[item]}</span>}
                               <span>{item}</span>
@@ -715,7 +716,7 @@ const Navbar = () => {
             {/* More Categories Link for Mobile */}
             <Link
               to="/categories"
-              className="flex items-center py-3 px-4 text-[#0a63b0] font-medium"
+              className="flex items-center py-3 px-4 text-[#0a63b0] font-medium w-full"
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className="text-lg mr-2">
@@ -728,12 +729,12 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Navigation Links */}
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 w-full">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href="#"
-                className="flex items-center py-4 text-gray-700 border-b border-gray-100"
+                className="flex items-center py-4 text-gray-700 border-b border-gray-100 w-full"
               >
                 <span className="text-gray-600 mr-3 text-lg">{link.icon}</span>
                 <span className="font-medium text-lg">{link.label}</span>

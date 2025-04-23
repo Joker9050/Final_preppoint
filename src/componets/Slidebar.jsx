@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import "../assets/css/style.css";
-
+import { Link } from 'react-router-dom';
 const LearningSection = (props) => {
+  const gridRef = useRef(null); // Unique ref for this component instance
+
   const scrollLeft = () => {
-    const grid = document.getElementById('learningGrid');
-    grid.scrollBy({ left: -grid.offsetWidth * 0.8, behavior: 'smooth' });
+    if (gridRef.current) {
+      gridRef.current.scrollBy({ left: -gridRef.current.offsetWidth * 0.8, behavior: 'smooth' });
+    }
   };
 
   const scrollRight = () => {
-    const grid = document.getElementById('learningGrid');
-    grid.scrollBy({ left: grid.offsetWidth * 0.8, behavior: 'smooth' });
+    if (gridRef.current) {
+      gridRef.current.scrollBy({ left: gridRef.current.offsetWidth * 0.8, behavior: 'smooth' });
+    }
   };
 
   return (
-    <section id="learning" className='bg-[#f9f9f9]'>
+    <section className='bg-[#f9f9f9]'>
       <div className={`container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12 md:py-20`}>
         <div className='text-center mb-8 md:mb-12'>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
@@ -22,27 +26,18 @@ const LearningSection = (props) => {
         </div>
 
         <div className="flex justify-between items-center mb-6 md:mb-8">
-          <button 
-            onClick={scrollLeft}
-            className="p-2 md:p-3 rounded-md bg-gray-100 shadow-md hover:bg-white text-gray-700"
-            aria-label="Scroll left"
-          >
+          <button onClick={scrollLeft} className="p-2 md:p-3 rounded-md bg-gray-100 shadow-md hover:bg-white text-gray-700" aria-label="Scroll left">
             &#10094;
           </button>
 
-          <button 
-            onClick={scrollRight}
-            className="p-2 md:p-3 rounded-md bg-gray-100 shadow-md hover:bg-white text-gray-700"
-            aria-label="Scroll right"
-          >
+          <button onClick={scrollRight} className="p-2 md:p-3 rounded-md bg-gray-100 shadow-md hover:bg-white text-gray-700" aria-label="Scroll right">
             &#10095;
           </button>
         </div>
-        
-        {/* Scrollable container with custom scrollbar */}
+
         <div className="relative">
           <div 
-            id="learningGrid"
+            ref={gridRef}
             className="flex overflow-x-auto pb-6 space-x-4 sm:space-x-6 mb-8 scroll-smooth pt-6"
             style={{
               scrollbarWidth: 'thin',
@@ -59,11 +54,14 @@ const LearningSection = (props) => {
             ))}
           </div>
         </div>
-        
+
         <div className="text-center">
-          <button className="px-5 py-2 sm:px-6 sm:py-2 bg-[#0a63b0] hover:border-2 hover:border-[#0a63b0] text-white hover:bg-white hover:text-[#0a63b0] font-bold transform hover:scale-105 transition-all duration-300 rounded-md">
+          <Link to={props.portion}>
+          <button className="px-5 py-2 sm:px-6 sm:py-2 bg-[#0a63b0] border-2 hover:border-[#0a63b0] text-white hover:bg-white hover:text-[#0a63b0] font-bold transform transition-all duration-300 rounded-md">
             SEE MORE →
           </button>
+          </Link>
+
         </div>
       </div>
     </section>

@@ -153,6 +153,7 @@ function Category() {
         <div className="container mx-auto px-4 py-12">
           {/* Information Technology Section */}
           <motion.section 
+          id ='IT'
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -204,16 +205,17 @@ function Category() {
               ))}
             </motion.div>
           </motion.section>
-
+          
           {/* Government Exams Section */}
           <motion.section 
+          id ='GOVT'
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={containerVariants}
             className={`mb-16 p-8 rounded-2xl shadow-lg ${categories.government.bgColor}`}
           >
-            <div className="flex items-center mb-8">
+            <div  className="flex items-center mb-8">
               <div className="text-5xl mr-4">{categories.government.mainIcon}</div>
               <div>
                 <motion.h2 variants={itemVariants} className="text-3xl font-bold text-gray-800">

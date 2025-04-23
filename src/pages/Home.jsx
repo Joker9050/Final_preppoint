@@ -130,8 +130,8 @@ const PrepPointWelcome = () => {
         </motion.div>
       </div> 
        
-      <Slidebar name={"Learning IT"} courses={learning.it} />
-      <Slidebar name={"Learning Gov.t"}  courses={learning.govt}/>
+      <Slidebar name={"Learning IT"} courses={learning.it} portion = '/categories#IT'/>
+      <Slidebar name={"Learning Gov.t"}  courses={learning.govt} portion='/categories#GOVT' />
       <section>
         <FeaturesSection/>
       </section>
