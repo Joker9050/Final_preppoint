@@ -2,12 +2,21 @@
 // File: public/api/learning_section.php
 
 header('Content-Type: application/json');
+
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['error' => 'Only POST requests are allowed']);
+    exit;
+}
+
 require_once '../includes/base_api.php'; 
+
 
 // Read raw POST input and decode
 $input = json_decode(file_get_contents('php://input'), true);
 
-// ✅ Validate input
+// Validate input
 if (!isset($input['category']) || !is_string($input['category'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing or invalid "category"']);

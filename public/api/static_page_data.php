@@ -2,12 +2,19 @@
 // File: public/api/learning_section.php
 
 header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['error' => 'Only POST requests are allowed']);
+    exit;
+}
+
 require_once '../includes/base_api.php'; 
 
 // Read raw POST input and decode
 $input = json_decode(file_get_contents('php://input'), true);
 
-// ✅ Validate input
+// Validate input
 if (!isset($input['page_name']) || !is_string($input['page_name'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing or invalid "page_name"']);
@@ -30,7 +37,7 @@ try {
     }
 
     // 3. Add to response
-    $response = $page_data;
+    $response['data'] = $page_data;
 
     echo json_encode($response, JSON_PRETTY_PRINT);
 } catch (PDOException $e) {
