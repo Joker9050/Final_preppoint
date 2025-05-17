@@ -4,6 +4,7 @@
 $EXPECTED_API_KEY = 'prep_2025_$trong_k3y'; // Keep this secret!
 $ALLOWED_ORIGINS = [
     'http://localhost:3000',     // Dev frontend
+    'http://localhost:8000'
     // 'https://preppoint.in',       // Production frontend url 
 ];
 

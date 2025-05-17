@@ -23,7 +23,7 @@ if (!isset($input['category']) || !is_string($input['category'])) {
     exit;
 }
 
-$categoryName = $input['category'];
+$categoryName = $input['category']; 
 $response = [];
 
 try {
