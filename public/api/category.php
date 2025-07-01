@@ -3,6 +3,7 @@
 
 header('Content-Type: application/json');
 
+require_once '../includes/base_api.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405); // Method Not Allowed
@@ -10,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once '../includes/base_api.php';
 // require_once '../includes/db.php';  // for local testing 
 $response = [];
 
@@ -65,7 +65,7 @@ try {
 
         $response[$catKey]['sections'] = $subcategory;
     }
-
+    
     echo json_encode($response, JSON_PRETTY_PRINT);
 } catch (PDOException $e) {
     http_response_code(500);

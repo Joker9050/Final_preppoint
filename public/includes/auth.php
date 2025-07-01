@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Step 3: Content-Type Check (for POST/PUT)
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-    if (stripos($contentType, 'application/json') === false) {
+    if (stripos($contentType, 'application/json') === false && stripos($contentType, 'multipart/form-data') === false) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid Content-Type. Expected application/json']);
         exit;
