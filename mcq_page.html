@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prepoint MCQ Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5;
+      color: #2d3748;
+    }
+
+    header {
+      background-color: #0a5eb0;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 220px 1fr 260px;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    aside.left-panel, aside.right-panel, main {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    footer {
+      background-color: #0a5eb0;
+      color: white;
+      text-align: center;
+      padding: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .question-link {
+      display: block;
+      padding: 0.6rem 0;
+      margin-bottom: 0.3rem;
+      border-left: 4px solid transparent;
+      padding-left: 0.8rem;
+      color: #0a5eb0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .question-link:hover {
+      background-color: #e9f2ff;
+      border-left: 4px solid #0a5eb0;
+    }
+
+    .question-box {
+      margin-bottom: 2.5rem;
+    }
+
+    .question-text {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .code-container {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+
+    .option {
+      padding: 0.85rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #fdfdfd;
+    }
+
+    .option:hover {
+      background-color: #eef7ff;
+      border-color: #0a5eb0;
+    }
+
+    .option.correct {
+      background-color: #e6f9ec;
+      border-color: #28a745;
+    }
+
+    .option.incorrect {
+      background-color: #fde8e8;
+      border-color: #dc3545;
+    }
+
+    .answer-section {
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-left: 4px solid #0a5eb0;
+      border-radius: 8px;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .answer-section.show {
+      display: block;
+    }
+
+    .show-answer-btn {
+      background-color: #0a5eb0;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    .show-answer-btn:hover {
+      background-color: #084d91;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Prepoint MCQ Practice
+  </header>
+
+  <div class="container">
+    <aside class="left-panel">
+      <h3>Progress</h3>
+      <div class="question-link">Question 1</div>
+      <div class="question-link">Question 2</div>
+      <div class="question-link">Question 3</div>
+    </aside>
+
+    <main id="mcq-area">
+      <!-- Questions will be injected here -->
+    </main>
+
+    <aside class="right-panel">
+      <h3>Sponsored</h3>
+      <p>Your Ad or Tip content goes here. You can add images, tips, or useful links.</p>
+    </aside>
+  </div>
+
+  <footer>
+    &copy; 2025 Prepoint | All rights reserved
+  </footer>
+
+  <script>
+    const questions = [
+      {
+        questionText: "What is the output of console.log(typeof null)?",
+        codeSnippet: "",
+        options: {
+          a: "object",
+          b: "null",
+          c: "undefined",
+          d: "string"
+        },
+        correctAnswer: "a",
+        explanation: "typeof null is \"object\" due to a legacy bug in JavaScript."
+      },
+      {
+        questionText: "What will be the output of the following JavaScript code?",
+        codeSnippet: "console.log(2 + '2');\nconsole.log(typeof (2 + '2'));",
+        options: {
+          a: "22 and number",
+          b: "22 and string",
+          c: "4 and number",
+          d: "Error"
+        },
+        correctAnswer: "b",
+        explanation: "2 is coerced to string so '2' + '2' = '22'. typeof is 'string'."
+      }
+    ];
+
+    const mcqArea = document.getElementById('mcq-area');
+
+    function renderQuestions(data) {
+      data.forEach((q, idx) => {
+        const box = document.createElement('div');
+        box.className = 'question-box';
+
+        box.innerHTML = `
+          <div class="question-text">${idx + 1}. ${q.questionText}</div>
+          ${q.codeSnippet ? `<div class="code-container">${q.codeSnippet}</div>` : ''}
+          ${Object.entries(q.options).map(([key, val]) => `
+            <div class="option" data-answer="${key}"><strong>${key.toUpperCase()}.</strong> ${val}</div>
+          `).join('')}
+          <button class="show-answer-btn">See Answer & Explanation</button>
+          <div class="answer-section">
+            <strong>Correct Answer:</strong> ${q.correctAnswer.toUpperCase()} - ${q.options[q.correctAnswer]}<br><br>
+            <strong>Explanation:</strong><br>${q.explanation}
+          </div>
+        `;
+
+        mcqArea.appendChild(box);
+
+        const options = box.querySelectorAll('.option');
+        const answerBtn = box.querySelector('.show-answer-btn');
+        const answerSection = box.querySelector('.answer-section');
+
+        options.forEach(opt => {
+          opt.addEventListener('click', () => {
+            options.forEach(o => o.classList.remove('correct', 'incorrect'));
+            const chosen = opt.getAttribute('data-answer');
+            if (chosen === q.correctAnswer) {
+              opt.classList.add('correct');
+            } else {
+              opt.classList.add('incorrect');
+              options.forEach(o => {
+                if (o.getAttribute('data-answer') === q.correctAnswer) {
+                  o.classList.add('correct');
+                }
+              });
+            }
+          });
+        });
+
+        answerBtn.addEventListener('click', () => {
+          answerSection.classList.toggle('show');
+        });
+      });
+    }
+
+    renderQuestions(questions);
+  </script>
+</body>
+</html>
