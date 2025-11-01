@@ -227,7 +227,7 @@ const Navbar = () => {
         {!isMobileView && (
           <div className="text-white text-xs sm:text-sm hover:text-blue-200 transition-colors duration-300 flex items-center">
             <FaEnvelope className="mr-1 sm:mr-2" />
-            mail: prep_point@gmail.com
+            mail: gargumesh463@gmail.com
           </div>
         )}
         <MobileMenu isMobileView={isMobileView} />

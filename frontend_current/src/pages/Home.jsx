@@ -7,7 +7,8 @@ import Slidebar from "../componets/Slidebar";
 import FeaturesSection from "../componets/FeaturesSection"
 import ContactUs from "../componets/ContactUs"
 import FeedbackSection from "../componets/FeedbackSection"
-
+const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 // Your provided JSON data
 const tempContent = [
   {
@@ -182,14 +183,15 @@ const PrepPointWelcome = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/PrepPoint/public/api/learning_section.php', {
+      const response = await fetch(`${API_URL}learning_section.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-KEY': 'prep_2025_$trong_k3y'
+          'X-API-KEY': API_KEY
         },
         body: JSON.stringify({ category })
       });
+      console.log("API Response:", response);
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }

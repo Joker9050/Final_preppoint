@@ -15,6 +15,8 @@ import {
 } from "react-icons/fa";
 import { SiTypescript } from "react-icons/si";
 
+const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 // Static mappings for icons and colors (frontend only)
 const CATEGORY_ICONS = {
   "Information Technology": "💻",
@@ -124,9 +126,9 @@ const CategoryDropdown = ({ isMobileView }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8080/PrepPoint/public/api/category.php', {
+      const response = await fetch(`${API_URL}category.php`, {
       headers: {
-        'X-API-KEY': 'prep_2025_$trong_k3y'
+        'X-API-KEY': API_KEY
       }
       });
       if (!response.ok) throw new Error('Failed to fetch categories');

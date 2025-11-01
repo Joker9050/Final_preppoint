@@ -59,15 +59,17 @@ const itemVariants = {
   }
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 // API service function
 const fetchCategories = async () => {
   try {
     const response = await fetch(
-      "http://localhost:8080/PrepPoint/public/api/category_full.php",
-      {
+    `${API_URL}category_full.php`,
+       {
         method: "GET",
         headers: {
-          "X-API-KEY": "prep_2025_$trong_k3y",
+          "X-API-KEY": API_KEY,
           "Content-Type": "application/json"
         }
       }

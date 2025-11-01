@@ -8,6 +8,8 @@ import { useAuth } from "../pages/Auth/AuthContext";
 import Mcq from "../pages/Mcq";
 import Dashboard from "../pages/User/Dashboard";
 import Contact from "../pages/Contact";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
+import StaticPage from "../pages/StaticPage";
 
 export default function AppRoutes() {
   const { user } = useAuth();
@@ -15,7 +17,7 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
@@ -23,6 +25,14 @@ export default function AppRoutes() {
         <Route path="/mcq" element={<Mcq/>} />
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/contact" element={<Contact />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        
+        {/* Static pages */}
+        <Route path="/terms-conditions" element={<StaticPage />} />
+        <Route path="/privacy-policy" element={<StaticPage />} />
+        <Route path="/cookie-policy" element={<StaticPage />} />
+        <Route path="/terms-of-service" element={<StaticPage />} />
+        <Route path="/legal/:slug" element={<StaticPage />} />
 
         {/* <Route
           path="/"

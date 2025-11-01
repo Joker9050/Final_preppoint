@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
 import axios from 'axios';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode'; // Correct import for latest version
+import { jwtDecode } from 'jwt-decode';
+const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({
     email: '',
     password: '',
@@ -41,24 +46,36 @@ const Login = () => {
 
     let isValid = true;
 
-    if (!email) {
+    if (!formData.email) {
       newErrors.email = 'Email is required';
       isValid = false;
-    } else if (!validateEmail(email)) {
+    } else if (!validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
       isValid = false;
     }
 
-    if (!password) {
+    if (!formData.password) {
       newErrors.password = 'Password is required';
       isValid = false;
-    } else if (!validatePassword(password)) {
+    } else if (!validatePassword(formData.password)) {
       newErrors.password = 'Password must be at least 8 characters';
       isValid = false;
     }
 
     setErrors(newErrors);
     return isValid;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    
+    if (touched[name]) {
+      validateForm();
+    }
   };
 
   const handleBlur = (field) => {
@@ -77,30 +94,31 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Replace with your actual API endpoint
-      // const response = await axios.post(
-      //   'http://your-api-endpoint/auth/login',
-      //   { email, password },
-      //   { 
-      //     headers: { 'Content-Type': 'application/json' },
-      //     validateStatus: (status) => status >= 200 && status < 500
-      //   }
-      // );
+        const response = await axios.post(
+         `${API_URL}register.php`,          
+          { 
+            email: formData.email,
+            password: formData.password
+          },
+          { 
+            headers: {
+              "X-API-KEY": API_KEY,
+              "Content-Type": "application/json"
+            }
+          }
+        );
 
-      // if (response.status === 401) {
-      //   throw new Error('Invalid email or password');
-      // }
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Login failed');
+      }
 
-      // const userData = response.data;
-      const userData = '{success}';
-      login(userData);
+      login(response.data.user);
       navigate('/dashboard');
     } catch (err) {
       setErrors({
         ...errors,
-        form: err.message || 
-             err.response?.data?.message || 
-             err.response?.data?.error || 
+        form: err.response?.data?.message || 
+             err.message || 
              'Login failed. Please try again.'
       });
     } finally {
@@ -113,36 +131,28 @@ const Login = () => {
     setErrors({ ...errors, form: '' });
     
     try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      console.log('Google Login Success:', decoded);
+        const response = await axios.post(
+          `${API_URL}register.php`,
+          { idToken: credentialResponse.credential },
+          { 
+            headers: {
+              "X-API-KEY": API_KEY,
+              "Content-Type": "application/json"
+            } 
+          }
+        );
 
-      if (!decoded.email || !decoded.email_verified) {
-        throw new Error('Google email not verified');
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Google authentication failed');
       }
 
-      // Here you would typically send the token to your backend
-      // const response = await axios.post(
-      //   'http://your-api-endpoint/auth/google',
-      //   { idToken: credentialResponse.credential },
-      //   { headers: { 'Content-Type': 'application/json' } }
-      // );
-
-      // const userData = response.data;
-      const userData = {
-        email: decoded.email,
-        name: decoded.name,
-        picture: decoded.picture,
-        // Add any other user data your app needs
-      };
-      
-      login(userData);
+      login(response.data.user);
       navigate('/dashboard');
     } catch (err) {
-      console.error('Google login error:', err);
       setErrors({
         ...errors,
-        form: err.message || 
-             err.response?.data?.message || 
+        form: err.response?.data?.message || 
+             err.message || 
              'Google login failed. Please try again.'
       });
     } finally {
@@ -168,7 +178,7 @@ const Login = () => {
   ];
 
   return (
-    <GoogleOAuthProvider clientId="87569987972-osskffm06pf1gotuvg96b2fhg2fh7sfq.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <div className="min-h-screen flex bg-gradient-to-br from-blue-50 to-indigo-50">
         {/* Attractive Sidebar */}
         <div className="hidden md:flex w-1/3 bg-gradient-to-b from-[#0a63b0] to-indigo-700 p-8 flex-col justify-center text-white">
@@ -216,7 +226,7 @@ const Login = () => {
                 <h2 className="text-2xl font-bold text-gray-800 mb-1">Log In</h2>
                 <p className="text-gray-600 mb-6">
                   Don't have an account?{' '}
-                  <a href="/register" className="text-[#0a63b0] hover:underline font-medium">Sign up</a>
+                  <Link to="/register" className="text-[#0a63b0] hover:underline font-medium">Sign up</Link>
                 </p>
 
                 {errors.form && (
@@ -229,41 +239,25 @@ const Login = () => {
                     </div>
                   </div>
                 )}
+                
+                {/* Google Login Button */}
+                {/* <div className="mb-6">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap
+                />
+                </div> */}
 
                 {/* Google Login Button */}
-                <div className="mb-6">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    render={(renderProps) => (
-                      <button
-                        onClick={renderProps.onClick}
-                        disabled={renderProps.disabled || googleLoading}
-                        className={`w-full flex items-center justify-center py-3 px-4 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all ${
-                          googleLoading ? 'opacity-80 cursor-not-allowed' : ''
-                        }`}
-                      >
-                        {googleLoading ? (
-                          <>
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Signing in with Google...
-                          </>
-                        ) : (
-                          <>
-                            <img 
-                              src="https://www.google.com/favicon.ico" 
-                              alt="Google logo" 
-                              className="h-5 w-5 mr-3"
-                            />
-                            Continue with Google
-                          </>
-                        )}
-                      </button>
-                    )}
-                  />
+                <div className="mb-6 flex justify-center">
+                  <div style={{ minHeight: 44, minWidth: 240, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={handleGoogleError}
+                      useOneTap
+                    />
+                  </div>
                 </div>
 
                 <div className="relative mb-6">
@@ -288,13 +282,15 @@ const Login = () => {
                       type="email"
                       autoComplete="email"
                       required
-                      className={`w-full px-4 py-2.5 text-sm rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
+                      className={`w-full px-4 py-2.5 text-sm rounded-lg border ${
+                        errors.email ? 'border-red-500' : 'border-gray-200'
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
                       placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={formData.email}
+                      onChange={handleChange}
                       onBlur={() => handleBlur('email')}
                     />
-                    {touched.email && errors.email && (
+                    {errors.email && (
                       <p className="mt-1 text-sm text-red-600">{errors.email}</p>
                     )}
                   </div>
@@ -303,34 +299,57 @@ const Login = () => {
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
                       Password
                     </label>
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      required
-                      className={`w-full px-4 py-2.5 text-sm rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      onBlur={() => handleBlur('password')}
-                    />
-                    {touched.password && errors.password && (
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        required
+                        className={`w-full px-4 py-2.5 text-sm rounded-lg border ${
+                          errors.password ? 'border-red-500' : 'border-gray-200'
+                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all`}
+                        placeholder="Enter your password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        onBlur={() => handleBlur('password')}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                            <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                    {errors.password && (
                       <p className="mt-1 text-sm text-red-600">{errors.password}</p>
                     )}
                   </div>
 
                   <div className="flex items-center justify-end">
-                    <a href="/forgot-password" className="text-sm text-[#0a63b0] hover:underline font-medium">
+                    <Link to="/forgot-password" className="text-sm text-[#0a63b0] hover:underline font-medium">
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
                   
                   <div>
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#0a63b0] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all ${loading ? 'opacity-80 cursor-not-allowed' : ''}`}
+                      className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#0a63b0] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all ${
+                        loading ? 'opacity-80 cursor-not-allowed' : ''
+                      }`}
                     >
                       {loading ? (
                         <>

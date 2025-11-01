@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
+
 const ContactModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -137,10 +140,10 @@ const ContactModal = ({ isOpen, onClose }) => {
       // Append honeypot value
       payload.append('honeypot', formData.honeypot);
 
-      const response = await fetch('http://localhost:8080/PrepPoint/public/api/contact_us.php', {
+      const response = await fetch(`${API_URL}contact_us.php`, {
         method: 'POST',
         headers: {
-          'X-API-KEY': 'prep_2025_$trong_k3y' // <-- Add your API key here
+          'X-API-KEY': API_KEY // <-- Add your API key here
          },
         body: payload
       });
